@@ -16,7 +16,7 @@ const update = async (userId, amount) => {
       );
 
     if (updatedRows === 0) {
-        throw new Error('Not enough funds');
+      return;
     }
 
     return updatedUser.balance;

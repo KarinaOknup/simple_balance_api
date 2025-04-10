@@ -1,15 +1,19 @@
 import { balanceService, userService } from '../services'
 
 const updateBalance = async ({userId, amount}) => {
-    const user = await userService.getUserById(userId);
-
-    const preCalculatedRes = user.balance + amount;
-
-    if (preCalculatedRes < 0) {
-        throw new Error('Not enough funds');
-    }
-
     const balance = await balanceService.update(userId, amount);
+
+    if (!balance && (amount < 0)){
+        const user = await userService.getUserById(userId);
+    
+        const preCalculatedRes = user.balance + amount;
+    
+        if (preCalculatedRes < 0) {
+            throw new Error('Not enough funds');
+        }
+    } else if (!balance) {
+        throw new Error('User didnt exists');
+    }
 
     return balance;
 
