@@ -36,10 +36,10 @@ const getPendingTasks = async () => {
   return tasks;
 };
 
-const closeTasks = async () => {
+const closeTasks = async (serverId: string) => {
   await db.cronTask.update(
     { status: "failed" },
-    { where: { instanceId: process.env.INSTANCE_ID, status: "pending" } }
+    { where: { instanceId: serverId, status: "pending" } }
   );
 };
 

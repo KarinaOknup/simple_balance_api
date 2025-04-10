@@ -2,6 +2,7 @@ import express, { Express, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import morgan from "morgan";
+import { v4 as uuidv4 } from "uuid";
 
 import { Request } from "./types";
 import validation from "./middlewares/validation";
@@ -9,10 +10,11 @@ import validation from "./middlewares/validation";
 import { getBalanceSchema, updateBalanceSchema } from "./schemas";
 import { userController, cronTaskController } from "./controllers";
 import { runMigrations } from "./utils/migrator";
-import { startCronService } from "./utils/cron";
+import CronService from "./utils/cron/service";
 
 const app: Express = express();
 const port = 8100;
+const serverId = process.env.SERVER_ID || uuidv4();
 
 const corsOptions = {
   origin: "*",
@@ -74,7 +76,9 @@ app.use("/api/v1", router);
 
 (async () => {
   await runMigrations();
-  await startCronService();
+
+  const cron = new CronService(serverId);
+  cron.start();
 
   app.listen(port, () => console.log(`Running on port ${port}`));
 })();
@@ -83,7 +87,7 @@ const shutdown = async () => {
   console.log("Shutting down...");
 
   setTimeout(async () => {
-    await cronTaskController.closeTasks();
+    await cronTaskController.closeTasks(serverId);
     console.log("Pending tasks was failed because of server SIGINT/SIGTERM");
     process.exit(0);
   }, 1000);

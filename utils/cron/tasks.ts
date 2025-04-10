@@ -1,4 +1,4 @@
-import { CronTaskConfig } from "./index";
+import { CronTaskConfig } from "./service";
 import taskConfig from "./config";
 import { cronTaskService } from "../../services";
 
@@ -12,7 +12,7 @@ Object.keys(taskConfig).forEach((name) => {
   if (!tasks) {
     tasks = [];
   }
-  if (name === "mark_as_failed_tasks") {
+  if (name === "00_mark_as_failed_tasks") {
     tasks.push({
       name,
       cronExpr: taskConfig[name],

@@ -13,8 +13,8 @@ const getList = async () => {
   return list;
 };
 
-const closeTasks = async () => {
-  await cronTaskService.closeTasks();
+const closeTasks = async (serverId: string) => {
+  await cronTaskService.closeTasks(serverId);
 };
 
 export default {

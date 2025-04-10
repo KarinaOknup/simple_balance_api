@@ -7,10 +7,12 @@ import {
   Sequelize,
 } from "sequelize";
 
+type CronTaskStatusType = "pending" | "completed" | "failed";
+
 type CronTasksAttributes = {
   id: number;
   name: string;
-  status: "pending" | "completed" | "failed";
+  status: CronTaskStatusType;
   instanceId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -24,7 +26,7 @@ class CronTasks extends Model<
 > {
   declare id: number;
   declare name: string;
-  declare status: "pending" | "completed" | "failed";
+  declare status: CronTaskStatusType;
   declare instanceId: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
