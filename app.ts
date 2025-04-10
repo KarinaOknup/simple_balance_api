@@ -10,8 +10,9 @@ import {
     getBalanceSchema,
     updateBalanceSchema
 } from './schemas'
-import {userController} from './controllers'
+import { userController, cronTaskController } from './controllers'
 import { runMigrations }from './utils/migrator'
+import { startCronService } from './utils/cron';
 
 const app: Express = express();
 const port = 8100;
@@ -52,10 +53,34 @@ router.get(`/balance/:userId`, validation(getBalanceSchema),  async (req: Reques
     }
 })
 
+router.get('/cron/task', async (req: Request, res: Response) => {
+    try {
+        const list = await cronTaskController.getList();
+        res.status(200).send({list});
+    } catch (err) {
+        console.log('ERROR:', err);
+        res.status(400).send({message: err.message});
+    }
+})
+
 app.use('/api/v1', router);
 
 (async () => {
     await runMigrations();
+    await startCronService();
   
-    app.listen(port, () => console.log(`Running on port ${port}`));
+    app.listen(port, () => console.log(`Running on port ${port}`))
 })();
+
+const shutdown = async () => {
+    console.log('Shutting down...');
+  
+    setTimeout(async () => {
+      await cronTaskController.closeTasks()
+      console.log('Pending tasks was failed because of server SIGINT/SIGTERM')
+      process.exit(0); 
+    }, 1000);
+  };
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
