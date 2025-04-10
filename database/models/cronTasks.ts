@@ -1,21 +1,30 @@
-import sequelize from '../sequelize';
-import { DataTypes, Optional, Model, CreationOptional, Sequelize } from 'sequelize'
+import sequelize from "../sequelize";
+import {
+  DataTypes,
+  Optional,
+  Model,
+  CreationOptional,
+  Sequelize,
+} from "sequelize";
 
 type CronTasksAttributes = {
-    id: number;
-    name: string;
-    status: 'pending' | 'completed' | 'failed',
-    instanceId: string;
-    createdAt: Date;
-    updatedAt: Date;
+  id: number;
+  name: string;
+  status: "pending" | "completed" | "failed";
+  instanceId: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-type CronTasksCreationAttributes = Optional<CronTasksAttributes, 'id'>;
+type CronTasksCreationAttributes = Optional<CronTasksAttributes, "id">;
 
-class CronTasks extends Model<CronTasksAttributes, CronTasksCreationAttributes> {
+class CronTasks extends Model<
+  CronTasksAttributes,
+  CronTasksCreationAttributes
+> {
   declare id: number;
   declare name: string;
-  declare status: 'pending' | 'completed' | 'failed';
+  declare status: "pending" | "completed" | "failed";
   declare instanceId: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -24,34 +33,34 @@ class CronTasks extends Model<CronTasksAttributes, CronTasksCreationAttributes> 
 CronTasks.init(
   {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     instanceId: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     name: {
-        type: DataTypes.STRING,
-        validate: {
-          min: 0
-        }
+      type: DataTypes.STRING,
+      validate: {
+        min: 0,
+      },
     },
-    status:{
-        type: DataTypes.ENUM('pending', 'completed', 'failed'),
+    status: {
+      type: DataTypes.ENUM("pending", "completed", "failed"),
     },
     createdAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.fn('NOW')
+      defaultValue: Sequelize.fn("NOW"),
     },
     updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: Sequelize.fn('NOW')
-    }
+      type: DataTypes.DATE,
+      defaultValue: Sequelize.fn("NOW"),
+    },
   },
   {
     sequelize,
-    tableName: 'cron_tasks'
+    tableName: "cron_tasks",
   }
 );
 

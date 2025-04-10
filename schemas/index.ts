@@ -1,7 +1,4 @@
-import getBalanceSchema from './getBalance';
-import updateBalanceSchema from './updateBalance';
+import getBalanceSchema from "./getBalance";
+import updateBalanceSchema from "./updateBalance";
 
-export {
-    getBalanceSchema,
-    updateBalanceSchema
-}
+export { getBalanceSchema, updateBalanceSchema };
